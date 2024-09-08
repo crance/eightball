@@ -1,0 +1,48 @@
+default:
+  # tags:
+  #   - saas-linux-small-amd64
+  image: fortifydocker/fortify-ci-tools:5.5.0-jdk-21
+
+variables:
+  SSC_APP_NAME: "eightball"
+  SSC_APP_VER_NAME: "scsast_remotetranslate"
+
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: never  # Prevent pipeline run for push event
+    - when: always # Run pipeline for all other cases
+
+stages:
+  - build
+  - fortify:translate
+
+.build:
+  stage: build
+  image: eclipse-temurin:8-jdk
+  script:
+    - javac EightBall.java
+  artifacts:
+    paths:
+      - "*.class"
+    expire_in: 1 day
+
+fortify-remoteTranslate:
+  stage: fortify:translate
+  before_script:
+    # ScanCentral SAST Client Auth Token
+    - echo "client_auth_token=${CLIENT_AUTH_TOKEN}" > /opt/Fortify/ScanCentral/Core/config/client.properties
+  script: 
+    - >
+      scancentral -url "$SCSAST_URL/scancentral-ctrl" -ssctoken "$SSC_TOKEN" start 
+      -upload 
+      -application "$SSC_APP_NAME" -version "$SSC_APP_VER_NAME" 
+      -projroot ".fortify" 
+      -uptoken "$SSC_TOKEN" 
+  after_script:
+    - mkdir .fortify
+    - cp -R ~/.fortify/scancentral-* .fortify/
+  artifacts:
+    paths:
+      - ".fortify"
+    expire_in: 1 week

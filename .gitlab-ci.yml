@@ -1,0 +1,57 @@
+default:
+  # tags:
+  #   - saas-linux-small-amd64
+  image: fortifydocker/fortify-ci-tools:5.5.0-jdk-21
+
+variables:
+  FOD_RELEASE_ID: "1018443"
+  FOD_UPLOADER_NOTES: "Triggered by Gitlab, committed on $CI_COMMIT_TIMESTAMP"
+
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: never  # Prevent pipeline run for push event
+    - when: always # Run pipeline for all other cases
+
+stages:
+  - build
+  - fortify:package
+  - fortify:upload
+
+.build:
+  stage: build
+  image: eclipse-temurin:8-jdk
+  script:
+    - javac EightBall.java
+  artifacts:
+    paths:
+      - "*.class"
+    expire_in: 1 day
+
+fod-package:
+  stage: fortify:package
+  script: 
+    - scancentral package $PACKAGE_OPTS -o package.zip
+  after_script:
+    - mkdir .fortify
+    - cp -R ~/.fortify/scancentral-* .fortify/
+  artifacts:
+    paths:
+      - ".fortify"
+      - "package.zip"
+    expire_in: 1 week
+
+fod-upload:
+  stage: fortify:upload
+  script: 
+    - >
+      FoDUpload -apiCredentials "$FOD_API_KEY" "$FOD_API_SECRET" 
+      -releaseId "$FOD_RELEASE_ID" 
+      -portalurl "$FOD_PORTAL_URL" -apiurl "$FOD_API_URL" 
+      -zipLocation package.zip 
+      -technologyStackId 7 -languageLevelId 12 
+      -assessmentTypeId 274 
+      -entitlementPreferenceType SubscriptionOnly 
+      -auditPreferenceId Automated 
+      -inProgressScanActionType Queue 
+      -notes "$FOD_UPLOADER_NOTES"

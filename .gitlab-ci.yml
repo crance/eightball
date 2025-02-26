@@ -1,6 +1,8 @@
 default:
-  # tags:
-  #   - saas-linux-small-amd64
+  tags:
+    - saas-linux-small-amd64
+    # - selfhosted
+    # - docker
   image: fortifydocker/fortify-ci-tools:5.5.0-jdk-21
 
 variables:

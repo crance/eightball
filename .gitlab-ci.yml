@@ -2,6 +2,7 @@ default:
   tags:
     - java
     - selfhosted
+    - shell
 
 variables:
   FORTIFY_BUILD_ID: "eightball"

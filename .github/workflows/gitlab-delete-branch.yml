@@ -1,0 +1,24 @@
+name: Delete Branch in GitLab
+
+on:
+  delete:
+    branches:
+      - '*'  # Triggers when any branch is deleted
+
+jobs:
+  delete_branch:
+    runs-on: ubuntu-latest
+    if: github.event.ref_type == 'branch'
+    steps:
+      - name: Get GitLab Project ID
+        run: |
+          PROJECT_ID=$(curl --silent --header "PRIVATE-TOKEN: ${{ secrets.GITLAB_TOKEN }}" \
+            "https://gitlab.com/api/v4/projects?search=${{ vars.GITLAB_REPO }}" | jq -r '.[0].id')
+          echo "PROJECT_ID=$PROJECT_ID" >> $GITHUB_ENV
+
+      - name: Delete branch in GitLab
+        run: |
+          BRANCH_NAME=${{ github.event.ref }}
+          curl --request DELETE \
+            --header "PRIVATE-TOKEN: ${{ secrets.GITLAB_TOKEN }}" \
+            "https://gitlab.com/api/v4/projects/${{ env.PROJECT_ID }}/repository/branches/$BRANCH_NAME"

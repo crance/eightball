@@ -30,11 +30,12 @@ jobs:
       - name: Delete branch in GitLab
         run: |
           BRANCH_NAME=${{ github.event.ref }}
+          ENCODED_BRANCH_NAME=$(jq -nr --arg branch "$BRANCH_NAME" '$branch | @uri')
           echo "Attempting to delete branch '$BRANCH_NAME' from GitLab project $PROJECT_ID"
           RESPONSE=$(curl --silent --request DELETE \
             --header "PRIVATE-TOKEN: ${{ secrets.GITLAB_TOKEN }}" \
             --write-out "%{http_code}" --output /dev/null \
-            "https://gitlab.com/api/v4/projects/${{ env.PROJECT_ID }}/repository/branches/${BRANCH_NAME}")
+            "https://gitlab.com/api/v4/projects/${{ env.PROJECT_ID }}/repository/branches/${ENCODED_BRANCH_NAME}")
           echo "GitLab API deletion response code: $RESPONSE"
           if [ "$RESPONSE" != "204" ]; then
             echo "Error: Failed to delete branch $BRANCH_NAME from GitLab."

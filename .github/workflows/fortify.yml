@@ -15,7 +15,7 @@ name: "Fortify SAST"
 on: 
   workflow_dispatch:
 env:
-  # FOD_RELEASE_ID: 1018443
+  FOD_RELEASE_ID: 1018443
   FOD_UPLOADER_NOTES: "Triggered by GitHub"
 
 jobs:
@@ -34,7 +34,7 @@ jobs:
           FOD_URL: ${{vars.FOD_PORTAL_URL}}
           FOD_CLIENT_ID: ${{secrets.FOD_API_KEY}}
           FOD_CLIENT_SECRET: ${{secrets.FOD_API_SECRET}}
-          FOD_RELEASE: 1018443
+          FOD_RELEASE: ${{env.FOD_RELEASE_ID}}
           # FOD_RELEASE: MyApp:MyRelease
           # EXTRA_PACKAGE_OPTS: -oss
           FOD_SAST_SCAN_EXTRA_OPTS: --notes=$FOD_UPLOADER_NOTES

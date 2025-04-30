@@ -17,14 +17,19 @@ fortify-sast:
     - cp -R ~/.fortify/scancentral-* .fortify/
     - >
       fcli ssc session login 
-      --token="$SSC_TOKEN" 
+      --token "$SSC_TOKEN" 
       --url "$SSC_URL" 
+    - >
+      fcli sc-sast session login 
+      --client-auth-token "$CLIENT_AUTH_TOKEN"
+      --token "$SSC_TOKEN" 
+      --ssc-url "$SSC_URL" 
     - > 
       fcli sc-sast scan start 
-      --file package.zip 
-      --publish-to="$SSC_APP_NAME:$SSC_APP_VER_NAME" 
-      --publish-token="$SSC_TOKEN" 
-      --sensor-version=24.4 
+      --package-file package.zip 
+      --publish-to "$SSC_APP_NAME:$SSC_APP_VER_NAME" 
+      --publish-token "$SSC_TOKEN" 
+      --sensor-version 24.4 
       --store jobtoken 
     - fcli ssc session logout
     # - >

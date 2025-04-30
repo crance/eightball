@@ -30,7 +30,7 @@ fortify-sast:
       --publish-to "$SSC_APP_NAME:$SSC_APP_VER_NAME" 
       --sensor-version 24.4 
       --store jobtoken 
-    - sc-sast session logout --no-revoke-token 
+    - fcli sc-sast session logout --no-revoke-token 
     - fcli ssc session logout
     # - >
     #   scancentral -url "$SCSAST_URL/scancentral-ctrl" -ssctoken "$SSC_TOKEN" start 

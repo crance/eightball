@@ -31,17 +31,17 @@ jobs:
         with:
           sast-scan: true
         env:
-          SSC_URL: ${{vars.SSC_URL}}
+          SSC_URL: ${{secrets.SSC_URL}}
           SSC_TOKEN: ${{secrets.SSC_TOKEN}}
           SC_SAST_TOKEN: ${{secrets.CLIENT_AUTH_TOKEN}}
-          SSC_APPVERSION: "${{vars.SSC_APP_NAME}}:${{vars.SSC_APP_VER_NAME}}"
+          SSC_APPVERSION: "${{env.SSC_APP_NAME}}:${{env.SSC_APP_VER_NAME}}"
           SC_SAST_SENSOR_VERSION: 24.4
 
-      - name: Fortify Tools Setup
-        uses: fortify/github-action/setup@v1
-        with:
-          sc-client: 24.4
-          vuln-exporter: latest
+      # - name: Fortify Tools Setup
+      #   uses: fortify/github-action/setup@v1
+      #   with:
+      #     sc-client: 24.4
+      #     vuln-exporter: latest
           
       # - name: Set SCANCENTRAL_JAVA_HOME
       #   run: |

@@ -1,4 +1,4 @@
-name: Mirror Branch Updates to GitLab
+name: GitLab - Mirror Branch
 
 on:
   push:

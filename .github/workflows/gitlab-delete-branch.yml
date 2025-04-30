@@ -1,9 +1,9 @@
-name: Delete Branch on GitHub UI (GitLab Update)
+name: GitLab - Delete Branch (via GitHub UI)
 
 on:
   delete:
     branches:
-      - "*"  # This fires only when a branch is deleted via the GitHub UI or API
+      - "*"
 
 jobs:
   delete_branch_ui:

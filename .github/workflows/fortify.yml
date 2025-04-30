@@ -37,7 +37,7 @@ jobs:
           FOD_RELEASE: ${{env.FOD_RELEASE_ID}}
           # FOD_RELEASE: MyApp:MyRelease
           # EXTRA_PACKAGE_OPTS: -oss
-          FOD_SAST_SCAN_EXTRA_OPTS: --notes=$FOD_UPLOADER_NOTES
+          FOD_SAST_SCAN_EXTRA_OPTS: --notes=${{env.FOD_UPLOADER_NOTES}}
           # DO_WAIT: true
           # DO_EXPORT: true
           DO_PACKAGE_DEBUG: true

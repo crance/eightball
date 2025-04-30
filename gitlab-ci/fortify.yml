@@ -13,7 +13,7 @@ fortify-sast:
     # ScanCentral SAST Client Auth Token
     # - echo "client_auth_token=${CLIENT_AUTH_TOKEN}" > /opt/Fortify/ScanCentral/Core/config/client.properties
   script: 
-    - scancentral package -o package.zip
+    - scancentral package -o package.zip -exclude "gitlab-ci/*" 
     - cp -R ~/.fortify/scancentral-* .fortify/
     - >
       fcli ssc session login 

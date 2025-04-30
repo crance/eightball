@@ -1,3 +1,15 @@
+# Use the generic fortify/github-action to submit FoD scans.
+# If granular controls are required, use the following to setup the use shell commands to call scancentral and fodupload
+# - fortify/github-action/setup@v1
+# 
+# Details of the tools definitions can be found in:
+# - https://github.com/fortify/github-action/blob/main/setup/src/constants.ts
+# - https://github.com/fortify/tool-definitions/tree/main/v1
+# 
+# If tools are needed to be hosted in airgap environment, provide the tools definition file via `TOOL_DEFINITIONS` variable when using `fortify/github-action`.
+# A sample of the tools definition file can be found in:
+# - https://github.com/fortify/tool-definitions/releases/download/v1/tool-definitions.yaml.zip
+
 name: "Fortify SAST"
 
 on: 
@@ -14,66 +26,51 @@ jobs:
       - name: Check out source code
         uses: actions/checkout@v4
 
-      # Tools Definition in
-      # https://github.com/fortify/github-action/blob/main/setup/src/constants.ts not updated
-      # 
-      # Able override if updated in 
-      # https://github.com/fortify/tool-definitions/releases/download/v1/tool-definitions.yaml.zip
-      # - name: ScanCentral SAST Assessment
-      #   uses: fortify/github-action@v1
-      #   with:
-      #     sast-scan: true
-      #   env:
-      #     SSC_URL: ${{secrets.SSC_URL}}
-      #     SSC_TOKEN: ${{secrets.SSC_TOKEN}}
-      #     SC_SAST_TOKEN: ${{secrets.CLIENT_AUTH_TOKEN}}
-      #     # EXTRA_PACKAGE_OPTS: -oss
-      #     # DO_WAIT: true
-      #     # DO_EXPORT: true
-      #     # TOOL_DEFINITIONS: https://github.com/fortify/tool-definitions/releases/tag/v1/tool-definitions.yaml.zip
+      - name: Fortify SAST Assessment
+        uses: fortify/github-action@v1
+        with:
+          sast-scan: true
+        env:
+          SSC_URL: ${{vars.SSC_URL}}
+          SSC_TOKEN: ${{secrets.SSC_TOKEN}}
+          SC_SAST_TOKEN: ${{secrets.CLIENT_AUTH_TOKEN}}
+          SSC_APPVERSION: "${{vars.SSC_APP_NAME}}:${{vars.SSC_APP_VER_NAME}}"
+          SC_SAST_SENSOR_VERSION: 24.4
 
-      # Check list of version from:
-      # https://github.com/fortify/tool-definitions/tree/main/v1
-      - name: FoD Tools Setup
+      - name: Fortify Tools Setup
         uses: fortify/github-action/setup@v1
         with:
-          sc-client: 24.2.0
+          sc-client: 24.4
           vuln-exporter: latest
           
-      - name: Set SCANCENTRAL_JAVA_HOME
-        run: |
-          echo "SCANCENTRAL_JAVA_HOME=${JAVA_HOME_21_X64}" >> $GITHUB_ENV
+      # - name: Set SCANCENTRAL_JAVA_HOME
+      #   run: |
+      #     echo "SCANCENTRAL_JAVA_HOME=${JAVA_HOME_21_X64}" >> $GITHUB_ENV
 
-      # - name: Check Env Var
-      #   run: env
+      # - name: Set Client Auth Token
+      #   run: echo "client_auth_token=${SC_SAST_TOKEN}" > "${SC_CLIENT_INSTALL_DIR}/Core/config/client.properties"
+      #   env:
+      #     SC_SAST_TOKEN: ${{secrets.CLIENT_AUTH_TOKEN}}
 
-      - name: Set Client Auth Token
-        run: echo "client_auth_token=${SC_SAST_TOKEN}" > "${SC_CLIENT_INSTALL_DIR}/Core/config/client.properties"
-        env:
-          SC_SAST_TOKEN: ${{secrets.CLIENT_AUTH_TOKEN}}
+      # - name: ScanCentral SAST 
+      #   run: >
+      #     scancentral -url "${{secrets.SCSAST_URL}}/scancentral-ctrl" -ssctoken "${{secrets.SSC_TOKEN}}" start 
+      #     -upload 
+      #     -application "$SSC_APP_NAME" -version "$SSC_APP_VER_NAME" 
+      #     -projroot ".fortify" 
+      #     -uptoken "${{secrets.SSC_TOKEN}}" 
 
-      # Check IP/ ASN to whitelist
-      # - run: curl ipinfo.io
+      # - name: Copy .fortify to workspace
+      #   run: |
+      #     mkdir .fortify
+      #     cp -R ~/.fortify/scancentral-* .fortify/scancentral
+      #   if: always()
 
-      - name: ScanCentral SAST 
-        run: >
-          scancentral -url "${{secrets.SCSAST_URL}}/scancentral-ctrl" -ssctoken "${{secrets.SSC_TOKEN}}" start 
-          -upload 
-          -application "$SSC_APP_NAME" -version "$SSC_APP_VER_NAME" 
-          -projroot ".fortify" 
-          -uptoken "${{secrets.SSC_TOKEN}}" 
-
-      - name: Copy .fortify to workspace
-        run: |
-          mkdir .fortify
-          cp -R ~/.fortify/scancentral-* .fortify/scancentral
-        if: always()
-
-      - name: Save ScanCentral Logs
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-            name: scancentral-logs
-            # path: ~/.fortify/scancentral-24.2.0/log
-            path: .fortify/scancentral/log
-            retention-days: 7
+      # - name: Save ScanCentral Logs
+      #   uses: actions/upload-artifact@v4
+      #   if: always()
+      #   with:
+      #       name: scancentral-logs
+      #       # path: ~/.fortify/scancentral-24.2.0/log
+      #       path: .fortify/scancentral/log
+      #       retention-days: 7

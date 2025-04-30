@@ -17,7 +17,7 @@ fortify-sast:
     - cp -R ~/.fortify/scancentral-* .fortify/
     - >
       fcli ssc session login 
-      ---token="$SSC_TOKEN" 
+      --token="$SSC_TOKEN" 
       --url "$SSC_URL" 
       --client-auth-token="${CLIENT_AUTH_TOKEN}" 
     - > 

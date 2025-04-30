@@ -1,0 +1,33 @@
+stages:
+  - test
+
+variables:
+  FOD_RELEASE_ID: "1018443"
+  FOD_UPLOADER_NOTES: "Triggered by Gitlab, committed on $CI_COMMIT_TIMESTAMP"
+
+fod-sast:
+  stage: test
+  script:
+
+
+fod-package:
+  stage: sast
+  image: fortifydocker/fortify-ci-tools:6.2-jdk-21
+  before_script:
+    - mkdir .fortify
+  script: 
+    - scancentral package $PACKAGE_OPTS -o package.zip
+    - cp -R ~/.fortify/scancentral-* .fortify/
+    - >
+      FoDUpload -apiCredentials "$FOD_API_KEY" "$FOD_API_SECRET" 
+      -releaseId "$FOD_RELEASE_ID" 
+      -portalurl "$FOD_PORTAL_URL" -apiurl "$FOD_API_URL" 
+      -zipLocation package.zip 
+      -entitlementPreferenceType SubscriptionOnly 
+      -inProgressScanActionType Queue 
+      -notes "$FOD_UPLOADER_NOTES"
+  artifacts:
+    paths:
+      - ".fortify"
+      - "package.zip"
+    expire_in: 1 week

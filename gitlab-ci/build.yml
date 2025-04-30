@@ -1,0 +1,15 @@
+stages:
+  - build
+  - test
+
+.build:
+  stage: build
+  image: eclipse-temurin:8-jdk
+  script:
+    - javac EightBall.java
+
+.unit_tests:
+  stage: test
+  image: eclipse-temurin:8-jdk
+  script:
+    - echo "Performing Unit Tests"

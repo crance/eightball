@@ -19,7 +19,6 @@ fortify-sast:
       fcli ssc session login 
       --token="$SSC_TOKEN" 
       --url "$SSC_URL" 
-      --client-auth-token="${CLIENT_AUTH_TOKEN}" 
     - > 
       fcli sc-sast scan start 
       --file package.zip 

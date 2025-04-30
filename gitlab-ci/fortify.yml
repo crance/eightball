@@ -33,7 +33,15 @@ fortify-sast:
       --notes "$FOD_UPLOADER_NOTES" 
       --store scanid
     # - fcli fod sast-scan wait-for ::scanid::
-    - fcli fod session logout 
+    - fcli fod session logout
+    # - >
+    #   FoDUpload -apiCredentials "$FOD_API_KEY" "$FOD_API_SECRET" 
+    #   -releaseId "$FOD_RELEASE_ID" 
+    #   -portalurl "$FOD_PORTAL_URL" -apiurl "$FOD_API_URL" 
+    #   -zipLocation package.zip 
+    #   -entitlementPreferenceType SubscriptionOnly 
+    #   -inProgressScanActionType Queue 
+    #   -notes "$FOD_UPLOADER_NOTES"
   artifacts:
     paths:
       - ".fortify"

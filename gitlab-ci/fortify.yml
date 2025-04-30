@@ -5,7 +5,7 @@ variables:
   FOD_RELEASE_ID: "1018443"
   FOD_UPLOADER_NOTES: "Triggered by Gitlab, committed on $CI_COMMIT_TIMESTAMP"
 
-fod-sast:
+fortify-sast:
   stage: test
   image: fortifydocker/fortify-ci-tools:6.2-jdk-21
   before_script:

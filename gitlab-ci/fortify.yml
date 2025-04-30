@@ -22,7 +22,7 @@ fortify-sast:
     - >
       fcli sc-sast session login 
       --client-auth-token "$CLIENT_AUTH_TOKEN"
-      --token "$SSC_TOKEN" 
+      --ssc-ci-token "$SSC_TOKEN" 
       --ssc-url "$SSC_URL" 
     - > 
       fcli sc-sast scan start 

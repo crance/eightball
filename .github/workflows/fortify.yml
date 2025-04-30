@@ -1,5 +1,5 @@
 # Use the generic fortify/github-action to submit FoD scans.
-# If granular configurations are required, use the following to setup the use shell commands
+# If granular controls are required, use the following to setup the use shell commands to call scancentral and fodupload
 # - fortify/github-action/setup@v1
 # 
 # Details of the tools definitions can be found in:
@@ -15,7 +15,7 @@ name: "Fortify SAST"
 on: 
   workflow_dispatch:
 env:
-  FOD_RELEASE_ID: "1018443"
+  FOD_RELEASE_ID: 1018443
   FOD_UPLOADER_NOTES: "Triggered by GitHub"
 
 jobs:
@@ -42,8 +42,6 @@ jobs:
           # DO_EXPORT: true
           DO_PACKAGE_DEBUG: true
 
-      # # Check list of version from:
-      # # https://github.com/fortify/tool-definitions/tree/main/v1
       # - name: FoD Tools Setup
       #   uses: fortify/github-action/setup@v1
       #   with:
@@ -54,9 +52,6 @@ jobs:
       # - name: Set SCANCENTRAL_JAVA_HOME
       #   run: |
       #     echo "SCANCENTRAL_JAVA_HOME=${JAVA_HOME_21_X64}" >> $GITHUB_ENV
-
-      # # - name: Check Env Var
-      # #   run: env
 
       # - name: Package
       #   run: scancentral package $PACKAGE_OPTS -o package.zip

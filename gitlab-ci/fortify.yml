@@ -7,11 +7,6 @@ variables:
 
 fod-sast:
   stage: test
-  script:
-
-
-fod-package:
-  stage: sast
   image: fortifydocker/fortify-ci-tools:6.2-jdk-21
   before_script:
     - mkdir .fortify

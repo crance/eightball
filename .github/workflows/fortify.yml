@@ -2,9 +2,13 @@ name: "Fortify SAST"
 
 on: 
   workflow_dispatch:
+env:
+  FORTIFY_BUILD_ID: "eightball"
+  SSC_APP_NAME: "eightball"
+  SSC_APP_VER_NAME: "1.0"
 
 jobs:
-  build:
+  sast:
     runs-on: ubuntu-latest
     steps:
       - name: Check out source code

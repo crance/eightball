@@ -14,11 +14,6 @@ fortify-sast:
     - shell
   script: 
     - sourceanalyzer -b "$FORTIFY_BUILD_ID" -project-root ".fortify" -debug -verbose -jdk 8 EightBall.java
-    - > 
-      sourceanalyzer -b "$FORTIFY_BUILD_ID" 
-      -project-root ".fortify" 
-      -debug -verbose 
-      -scan -f "$FORTIFY_BUILD_ID.fpr"
     - >
       scancentral -url "$SCSAST_URL/scancentral-ctrl" -ssctoken "$SSC_TOKEN" start 
       -upload 

@@ -4,7 +4,7 @@ stages:
 variables:
   FORTIFY_BUILD_ID: "eightball"
   SSC_APP_NAME: "eightball"
-  SSC_APP_VER_NAME: "1.0"
+  SSC_APP_VER_NAME: "scsast_remotescan"
 
 fortify-sast:
   stage: test

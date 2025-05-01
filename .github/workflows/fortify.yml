@@ -18,7 +18,7 @@ jobs:
         run: |
           fortifyupdate -url "${{secrets.SSC_URL}}" -acceptKey -acceptSSLCertificate 
           sourceanalyzer -b "${{env.FORTIFY_BUILD_ID}}" -project-root ".fortify" -debug -verbose -logfile trans.log -jdk 8 EightBall.java
-          sourceanalyzer -b "${{env.FORTIFY_BUILD_ID}}" -project-root ".fortify" -debug -verbose -logfile scan.log -scan -f "$FORTIFY_BUILD_ID.fpr" 
+          sourceanalyzer -b "${{env.FORTIFY_BUILD_ID}}" -project-root ".fortify" -debug -verbose -logfile scan.log -scan -f "${{env.FORTIFY_BUILD_ID}}.fpr" 
           fortifyclient -url "${{secrets.SSC_URL}}" -authtoken "${{secrets.SSC_TOKEN}}" uploadFPR -file "${{env.FORTIFY_BUILD_ID}}.fpr" -project "${{env.SSC_APP_NAME}}" -version "${{env.SSC_APP_VER_NAME}}"
       
       - name: Save Fortify Logs

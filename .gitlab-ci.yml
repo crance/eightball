@@ -1,0 +1,14 @@
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web"'      # Triggers when using the GitLab UI "Run Pipeline" button
+    - if: '$CI_PIPELINE_SOURCE == "api"'      # Triggers when using the GitLab API
+    - if: '$CI_PIPELINE_SOURCE == "trigger"'  # Triggers when using pipeline triggers
+    - when: never   
+    
+include:
+  - local: 'gitlab-ci/build.yml'
+  - local: 'gitlab-ci/fortify.yml'
+
+stages:
+  - build
+  - test

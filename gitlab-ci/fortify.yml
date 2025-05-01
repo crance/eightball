@@ -1,0 +1,44 @@
+stages:
+  - test
+
+variables:
+  SSC_APP_NAME: "eightball"
+  SSC_APP_VER_NAME: "scsast_remotetranslate"
+
+fortify-sast:
+  stage: test
+  image: fortifydocker/fortify-ci-tools:6.2-jdk-21
+  before_script:
+    - mkdir .fortify
+    # ScanCentral SAST Client Auth Token
+    # - echo "client_auth_token=${CLIENT_AUTH_TOKEN}" > /opt/Fortify/ScanCentral/Core/config/client.properties
+  script: 
+    - scancentral package -o package.zip -exclude "gitlab-ci/*" 
+    - cp -R ~/.fortify/scancentral-* .fortify/
+    - >
+      fcli ssc session login 
+      --token "$SSC_TOKEN" 
+      --url "$SSC_URL" 
+    - >
+      fcli sc-sast session login 
+      --client-auth-token "$CLIENT_AUTH_TOKEN"
+      --ssc-ci-token "$SSC_TOKEN" 
+      --ssc-url "$SSC_URL" 
+    - > 
+      fcli sc-sast scan start 
+      --package-file package.zip 
+      --publish-to "$SSC_APP_NAME:$SSC_APP_VER_NAME" 
+      --sensor-version 24.4 
+      --store jobtoken 
+    - fcli sc-sast session logout --no-revoke-token 
+    - fcli ssc session logout
+    # - >
+    #   scancentral -url "$SCSAST_URL/scancentral-ctrl" -ssctoken "$SSC_TOKEN" start 
+    #   -upload 
+    #   -application "$SSC_APP_NAME" -version "$SSC_APP_VER_NAME" 
+    #   -projroot ".fortify" 
+    #   -uptoken "$SSC_TOKEN" 
+  artifacts:
+    paths:
+      - ".fortify"
+    expire_in: 1 week

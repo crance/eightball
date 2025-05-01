@@ -12,7 +12,6 @@ fortify-sast:
     - java
     - selfhosted
     - shell
-  image: fortifydocker/fortify-ci-tools:6.2-jdk-21
   before_script:
     - fortifyupdate -url "$FORTIFY_UPDATE_URL" -acceptKey -acceptSSLCertificate
   script: 

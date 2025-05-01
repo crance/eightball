@@ -1,0 +1,33 @@
+stages:
+  - test
+
+variables:
+  FORTIFY_BUILD_ID: "eightball"
+  SSC_APP_NAME: "eightball"
+  SSC_APP_VER_NAME: "1.0"
+
+fortify-sast:
+  stage: test
+  tags:
+    - java
+    - selfhosted
+    - shell
+  script: 
+    - sourceanalyzer -b "$FORTIFY_BUILD_ID" -project-root ".fortify" -debug -verbose -jdk 8 EightBall.java
+    - > 
+      sourceanalyzer -b "$FORTIFY_BUILD_ID" 
+      -project-root ".fortify" 
+      -debug -verbose 
+      -scan -f "$FORTIFY_BUILD_ID.fpr"
+    - >
+      scancentral -url "$SCSAST_URL/scancentral-ctrl" -ssctoken "$SSC_TOKEN" start 
+      -upload 
+      -application "$SSC_APP_NAME" -version "$SSC_APP_VER_NAME" 
+      -projroot ".fortify" 
+      -uptoken "$SSC_TOKEN" 
+      -b "$FORTIFY_BUILD_ID" 
+      -scan 
+  artifacts:
+    paths:
+      - ".fortify"
+    expire_in: 1 week

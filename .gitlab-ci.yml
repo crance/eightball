@@ -1,56 +1,14 @@
-default:
-  tags:
-    - java
-    - selfhosted
-    - shell
-
-variables:
-  FORTIFY_BUILD_ID: "eightball"
-  SSC_APP_NAME: "eightball"
-  SSC_APP_VER_NAME: "scsast_remotescan"
-
 workflow:
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "push"'
-      when: never  # Prevent pipeline run for push event
-    - when: always # Run pipeline for all other cases
+    - if: '$CI_PIPELINE_SOURCE == "web"'      # Triggers when using the GitLab UI "Run Pipeline" button
+    - if: '$CI_PIPELINE_SOURCE == "api"'      # Triggers when using the GitLab API
+    - if: '$CI_PIPELINE_SOURCE == "trigger"'  # Triggers when using pipeline triggers
+    - when: never   
+    
+include:
+  - local: 'gitlab-ci/build.yml'
+  - local: 'gitlab-ci/fortify.yml'
 
 stages:
   - build
-  - fortify:translate
-  - fortify:scan
-
-.build:
-  stage: build
-  image: eclipse-temurin:8-jdk
-  script:
-    - javac EightBall.java
-  artifacts:
-    paths:
-      - "*.class"
-    expire_in: 1 day
-
-fortify-localTranslate:
-  stage: fortify:translate
-  script: 
-    - sourceanalyzer -b "$FORTIFY_BUILD_ID" -project-root ".fortify" -debug -verbose -jdk 8 EightBall.java
-  artifacts:
-    paths:
-      - ".fortify"
-    expire_in: 1 day
-
-fortify-RemoteScan:
-  stage: fortify:scan
-  script: 
-    - >
-      scancentral -url "$SCSAST_URL/scancentral-ctrl" -ssctoken "$SSC_TOKEN" start 
-      -upload 
-      -application "$SSC_APP_NAME" -version "$SSC_APP_VER_NAME" 
-      -projroot ".fortify" 
-      -uptoken "$SSC_TOKEN" 
-      -b "$FORTIFY_BUILD_ID" 
-      -scan 
-  artifacts:
-    paths:
-      - ".fortify"
-    expire_in: 1 week
+  - test

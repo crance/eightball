@@ -9,7 +9,24 @@ env:
 
 jobs:
   sast:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Check out source code
         uses: actions/checkout@v4
+
+      - name: Fortify SAST Assessment
+        run: |
+          fortifyupdate -url "$FORTIFY_UPDATE_URL" -acceptKey -acceptSSLCertificate 
+          sourceanalyzer -b "$FORTIFY_BUILD_ID" -project-root ".fortify" -debug -verbose -logfile trans.log -jdk 8 EightBall.java
+          sourceanalyzer -b "$FORTIFY_BUILD_ID" -project-root ".fortify" -debug -verbose -logfile scan.log -scan -f "$FORTIFY_BUILD_ID.fpr" 
+          fortifyclient -url "$SSC_URL" -authtoken "$SSC_TOKEN" uploadFPR -file "$FORTIFY_BUILD_ID.fpr" -project "$SSC_APP_NAME" -version "$SSC_APP_VER_NAME"
+      
+      - name: Save Fortify Logs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+            name: fortify-logs
+            path: |
+              *.log
+              *.fpr
+            retention-days: 7

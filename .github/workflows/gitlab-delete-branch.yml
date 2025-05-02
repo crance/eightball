@@ -1,4 +1,4 @@
-name: GitLab - Delete Branch (via GitHub UI)
+name: GitLab - Delete Branch
 
 on:
   delete:

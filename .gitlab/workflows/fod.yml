@@ -1,0 +1,41 @@
+stages:
+  - test
+
+variables:
+  FOD_RELEASE_ID: "1018443"
+  FOD_UPLOADER_NOTES: "Triggered by Gitlab, committed on $CI_COMMIT_TIMESTAMP"
+
+fortify-sast:
+  stage: test
+  image: fortifydocker/fortify-ci-tools:7-jdk-21
+  before_script:
+    - mkdir .fortify
+  script: 
+    - scancentral package $PACKAGE_OPTS -o package.zip 
+    - cp -R ~/.fortify/scancentral-* .fortify/
+    - >
+      fcli fod session login 
+      --client-id "$FOD_API_KEY" 
+      --client-secret "$FOD_API_SECRET" 
+      --url "$FOD_PORTAL_URL"
+    - >
+      fcli fod sast-scan start 
+      --file package.zip 
+      --release "$FOD_RELEASE_ID" 
+      --notes "$FOD_UPLOADER_NOTES" 
+      --store scanid
+    # - fcli fod sast-scan wait-for ::scanid::
+    - fcli fod session logout
+    # - >
+    #   FoDUpload -apiCredentials "$FOD_API_KEY" "$FOD_API_SECRET" 
+    #   -releaseId "$FOD_RELEASE_ID" 
+    #   -portalurl "$FOD_PORTAL_URL" -apiurl "$FOD_API_URL" 
+    #   -zipLocation package.zip 
+    #   -entitlementPreferenceType SubscriptionOnly 
+    #   -inProgressScanActionType Queue 
+    #   -notes "$FOD_UPLOADER_NOTES"
+  artifacts:
+    paths:
+      - ".fortify"
+      - "package.zip"
+    expire_in: 1 week

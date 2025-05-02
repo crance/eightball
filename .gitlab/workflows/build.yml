@@ -1,0 +1,22 @@
+stages:
+  - build
+  - test
+
+.build-workflow:
+  rules:
+    - if: '$WORKFLOW == "build"'
+    - when: never
+
+build:
+  extends: .build-workflow
+  stage: build
+  image: eclipse-temurin:8-jdk
+  script:
+    - javac EightBall.java
+
+unit_tests:
+  extends: .build-workflow
+  stage: test
+  image: eclipse-temurin:8-jdk
+  script:
+    - echo "Performing Unit Tests"

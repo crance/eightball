@@ -7,7 +7,7 @@ variables:
 
 fortify-sast:
   stage: test
-  image: fortifydocker/fortify-ci-tools:6.2-jdk-21
+  image: fortifydocker/fortify-ci-tools:7-jdk-21
   before_script:
     - mkdir .fortify
   script: 

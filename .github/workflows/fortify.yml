@@ -27,7 +27,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: FoD SAST Assessment
-        uses: fortify/github-action@v1
+        uses: fortify/github-action@v2
         with:
           sast-scan: true
         env:

@@ -21,9 +21,9 @@ fortify-sast:
       --token "$SSC_TOKEN" 
       --client-auth-token "$CLIENT_AUTH_TOKEN"
       --url "$SSC_URL" 
+      --sc-sast-url "$SCSAST_URL/scancentral-ctrl" 
     - > 
       fcli sc-sast scan start 
-      --sc-sast-url "$SCSAST_URL/scancentral-ctrl" 
       --sargs "-scan-policy classic" 
       --file package.zip 
       --publish-to "$SSC_APP_NAME:$SSC_APP_VER_NAME" 

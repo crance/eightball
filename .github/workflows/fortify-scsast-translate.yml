@@ -36,7 +36,7 @@ jobs:
           SC_SAST_TOKEN: ${{secrets.CLIENT_AUTH_TOKEN}}
           SSC_APPVERSION: "${{env.SSC_APP_NAME}}:${{env.SSC_APP_VER_NAME}}"
           SSC_LOGIN_EXTRA_OPTS: --sc-sast-url ${{secrets.SCSAST_URL}}/scancentral-ctrl
-          SC_SAST_SCAN_EXTRA_OPTS: --scan-args "-scan-policy classic"
+          SC_SAST_SCAN_EXTRA_OPTS: "--sargs '-scan-policy classic'"
           # SC_SAST_SENSOR_VERSION: 24.4
           DO_WAIT: true
 

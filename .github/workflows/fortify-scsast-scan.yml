@@ -17,7 +17,7 @@ jobs:
       - name: Fortify SAST Assessment
         run: |
           sourceanalyzer -b "${{env.FORTIFY_BUILD_ID}}" -project-root ".fortify" -debug -verbose -logfile trans.log -jdk 8 EightBall.java
-          scancentral -url "${{secrets.SCSAST_URL}}" -ssctoken "${{secrets.SSC_TOKEN}}" start -upload -application "${{env.SSC_APP_NAME}}" -version "${{env.SSC_APP_VER_NAME}}" -projroot ".fortify" -uptoken "${{secrets.SSC_TOKEN}}" -b "${{env.FORTIFY_BUILD_ID}}" -sargs "-scan-policy classic" -block -f "$FORTIFY_BUILD_ID.fpr" -scan
+          scancentral -url "${{secrets.SCSAST_URL}}/scancentral-ctrl" -ssctoken "${{secrets.SSC_TOKEN}}" start -upload -application "${{env.SSC_APP_NAME}}" -version "${{env.SSC_APP_VER_NAME}}" -projroot ".fortify" -uptoken "${{secrets.SSC_TOKEN}}" -b "${{env.FORTIFY_BUILD_ID}}" -sargs "-scan-policy classic" -block -f "$FORTIFY_BUILD_ID.fpr" -scan
       - name: Save Fortify Logs
         uses: actions/upload-artifact@v4
         if: always()

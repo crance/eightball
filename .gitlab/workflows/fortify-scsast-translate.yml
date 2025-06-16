@@ -26,7 +26,6 @@ fortify-sast:
       --sargs "-scan-policy classic" 
       --file package.zip 
       --publish-to "$SSC_APP_NAME:$SSC_APP_VER_NAME" 
-      --sensor-version 24.4 
       --store jobtoken 
     - > 
       fcli sc-sast scan wait-for ::jobtoken::

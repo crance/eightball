@@ -23,6 +23,7 @@ fortify-sast:
       -b "$FORTIFY_BUILD_ID" 
       -sargs "-scan-policy classic" 
       -block 
+      -f "$FORTIFY_BUILD_ID.fpr" 
       -scan 
   artifacts:
     paths:

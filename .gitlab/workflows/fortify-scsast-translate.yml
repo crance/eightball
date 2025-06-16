@@ -21,12 +21,15 @@ fortify-sast:
       --token "$SSC_TOKEN" 
       --client-auth-token "$CLIENT_AUTH_TOKEN"
       --url "$SSC_URL" 
+      --sc-sast-url "$SCSAST_URL/scancentral-ctrl" 
     - > 
       fcli sc-sast scan start 
+      --sargs "'-debug' '-verbose' '-scan-policy classic'" 
       --file package.zip 
       --publish-to "$SSC_APP_NAME:$SSC_APP_VER_NAME" 
-      --sensor-version 24.4 
       --store jobtoken 
+    - > 
+      fcli sc-sast scan wait-for ::jobtoken::
     - fcli ssc session logout
     # - >
     #   scancentral -url "$SCSAST_URL/scancentral-ctrl" -ssctoken "$SSC_TOKEN" start 

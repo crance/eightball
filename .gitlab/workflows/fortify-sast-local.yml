@@ -15,12 +15,14 @@ fortify-sast:
   before_script:
     - fortifyupdate -url "$FORTIFY_UPDATE_URL" -acceptKey -acceptSSLCertificate
   script: 
+    - sourceanalyzer -b "$FORTIFY_BUILD_ID" -project-root ".fortify" -clean
     - sourceanalyzer -b "$FORTIFY_BUILD_ID" -project-root ".fortify" -debug -verbose -jdk 8 EightBall.java
     - > 
       sourceanalyzer -b "$FORTIFY_BUILD_ID" 
       -project-root ".fortify" 
       -debug -verbose 
-      -scan -f "$FORTIFY_BUILD_ID.fpr"
+      -scan -f "$FORTIFY_BUILD_ID.fpr" 
+      -scan-policy classic
     - >
       fortifyclient -url "$SSC_URL" -authtoken "$SSC_TOKEN" 
       uploadFPR -file "$FORTIFY_BUILD_ID.fpr" 

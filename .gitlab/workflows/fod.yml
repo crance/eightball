@@ -24,7 +24,8 @@ fortify-sast:
       --release "$FOD_RELEASE_ID" 
       --notes "$FOD_UPLOADER_NOTES" 
       --store scanid
-    # - fcli fod sast-scan wait-for ::scanid::
+    - >
+      fcli fod sast-scan wait-for ::scanid::
     - fcli fod session logout
     # - >
     #   FoDUpload -apiCredentials "$FOD_API_KEY" "$FOD_API_SECRET" 

@@ -23,6 +23,7 @@ fortify-sast:
       --url "$SSC_URL" 
     - > 
       fcli sc-sast scan start 
+      --sc-sast-url "$SCSAST_URL/scancentral-ctrl" 
       --sargs "-scan-policy classic" 
       --file package.zip 
       --publish-to "$SSC_APP_NAME:$SSC_APP_VER_NAME" 

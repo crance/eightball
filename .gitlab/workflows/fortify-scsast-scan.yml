@@ -21,6 +21,8 @@ fortify-sast:
       -projroot ".fortify" 
       -uptoken "$SSC_TOKEN" 
       -b "$FORTIFY_BUILD_ID" 
+      -sargs "-scan-policy classic" 
+      -block 
       -scan 
   artifacts:
     paths:
